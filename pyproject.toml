@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kisansetu"
+version = "0.1.0"
+description = "Triage a farmer's plain-text question into a category, the crop, urgency, a plain-language answer, an action checklist, and the right government scheme. Ships a keyless deterministic backend so it runs anywhere, offline."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Mukunda Rao Katta", email = "mukunda.vjcs6@gmail.com" }]
+keywords = [
+  "ai",
+  "agriculture",
+  "agritech",
+  "social-good",
+  "india",
+  "advisory",
+  "llm",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dashboard = ["streamlit>=1.40"]
+gemini = ["google-genai>=0.3"]
+anthropic = ["anthropic>=0.40"]
+ollama = ["httpx>=0.27"]
+dev = ["pytest>=8.0", "ruff>=0.4"]
+
+[project.urls]
+Homepage = "https://github.com/MukundaKatta/kisansetu"
+Source = "https://github.com/MukundaKatta/kisansetu"
+Issues = "https://github.com/MukundaKatta/kisansetu/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kisansetu"]

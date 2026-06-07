@@ -8,7 +8,8 @@ it works on a cheap phone with a patchy connection.
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-pytest-blueviolet.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-unittest%20%2F%20pytest-blueviolet.svg)](tests/)
+[![Typed](https://img.shields.io/badge/typed-py.typed-informational.svg)](src/kisansetu/py.typed)
 
 > Built for the Rising India theme: practical AI for agriculture and the
 > last mile, where connectivity and API budgets are scarce.
@@ -114,12 +115,23 @@ question.
 
 ## Tests
 
+The fastest way needs **no install and no third-party packages** — the
+standard-library suite runs against a source checkout directly:
+
+```bash
+python3 -m unittest discover -s tests
+```
+
+A pytest suite is also provided (it adds the `tmp_path` fixture for the audit
+test):
+
 ```bash
 pip install -e ".[dev]"
 pytest
 ```
 
-The suite runs fully offline against the stub backend.
+Both suites run fully offline against the stub backend. CI byte-compiles every
+source file and runs the stdlib suite on Python 3.10–3.13.
 
 ## License
 

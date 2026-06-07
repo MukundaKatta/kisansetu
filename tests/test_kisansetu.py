@@ -1,10 +1,24 @@
-"""kisansetu test suite. Runs fully offline against the StubBackend."""
+"""kisansetu test suite. Runs fully offline against the StubBackend.
+
+These are pytest-style tests (some use the ``tmp_path`` fixture). Run them with
+``pytest``. A stdlib :mod:`unittest` suite that needs no third-party packages
+lives in ``tests/test_unittest.py`` for environments without pytest.
+"""
 
 from __future__ import annotations
 
 import json
+import os
+import sys
 
-from kisansetu import (
+# Make the package importable when tests run from a source checkout without an
+# editable install (e.g. via ``pytest`` from the repo root, or when a stdlib
+# ``unittest discover`` run merely imports this module).
+_SRC = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src")
+if _SRC not in sys.path:
+    sys.path.insert(0, _SRC)
+
+from kisansetu import (  # noqa: E402
     Advisor,
     assess_urgency,
     classify_query,

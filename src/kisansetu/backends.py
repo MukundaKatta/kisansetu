@@ -22,7 +22,9 @@ from .knowledge import SUMMARY
 class Backend(Protocol):
     name: str
 
-    def advise(self, query: str, *, category: str, crop: str | None, language: str) -> str: ...
+    def advise(
+        self, query: str, *, category: str, crop: str | None, language: str
+    ) -> str: ...
 
 
 class StubBackend:
@@ -36,7 +38,12 @@ class StubBackend:
     name = "stub"
 
     def advise(
-        self, query: str, *, category: str, crop: str | None = None, language: str = "en"
+        self,
+        query: str,
+        *,
+        category: str,
+        crop: str | None = None,
+        language: str = "en",
     ) -> str:
         crop_phrase = f" on your {crop}" if crop else ""
         template = SUMMARY.get(category, SUMMARY["general"])
@@ -45,7 +52,7 @@ class StubBackend:
 
 _PROMPT = (
     "You are an agricultural extension advisor for small farmers in India. "
-    "A farmer asked: \"{query}\". This has been triaged as a {category} issue"
+    'A farmer asked: "{query}". This has been triaged as a {category} issue'
     "{crop_part}. Give short, practical advice in plain {language} at a grade-6 "
     "reading level. Use simple words and at most 4 sentences. Do not invent "
     "chemical brand names; tell them to confirm with their local KVK. Return "
@@ -74,7 +81,12 @@ class GeminiBackend:
         self._model = model
 
     def advise(
-        self, query: str, *, category: str, crop: str | None = None, language: str = "en"
+        self,
+        query: str,
+        *,
+        category: str,
+        crop: str | None = None,
+        language: str = "en",
     ) -> str:
         prompt = _format_prompt(query, category, crop, language)
         resp = self._client.models.generate_content(model=self._model, contents=prompt)
@@ -93,7 +105,12 @@ class AnthropicBackend:
         self._model = model
 
     def advise(
-        self, query: str, *, category: str, crop: str | None = None, language: str = "en"
+        self,
+        query: str,
+        *,
+        category: str,
+        crop: str | None = None,
+        language: str = "en",
     ) -> str:
         prompt = _format_prompt(query, category, crop, language)
         msg = self._client.messages.create(
@@ -101,7 +118,9 @@ class AnthropicBackend:
             max_tokens=512,
             messages=[{"role": "user", "content": prompt}],
         )
-        return "".join(block.text for block in msg.content if block.type == "text").strip()
+        return "".join(
+            block.text for block in msg.content if block.type == "text"
+        ).strip()
 
 
 class OllamaBackend:
@@ -114,7 +133,12 @@ class OllamaBackend:
         self._host = host.rstrip("/")
 
     def advise(
-        self, query: str, *, category: str, crop: str | None = None, language: str = "en"
+        self,
+        query: str,
+        *,
+        category: str,
+        crop: str | None = None,
+        language: str = "en",
     ) -> str:
         import httpx  # lazy import
 

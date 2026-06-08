@@ -6,6 +6,7 @@ import json
 
 from kisansetu import (
     Advisor,
+    StubBackend,
     assess_urgency,
     classify_query,
     extract_crop,
@@ -16,7 +17,9 @@ from kisansetu import (
 
 
 def test_classify_each_category():
-    assert classify_query("brown rust spots and fungus on the wheat leaves") == "disease"
+    assert (
+        classify_query("brown rust spots and fungus on the wheat leaves") == "disease"
+    )
     assert classify_query("aphids and worms crawling over the plants") == "pest"
     assert classify_query("a hailstorm and flood flattened everything") == "weather"
     assert classify_query("how much water should I give the paddy") == "irrigation"
@@ -72,6 +75,31 @@ def test_scheme_credit_overrides_on_loan_words():
     assert "Kisan Credit Card" in match_scheme("soil", "I need a crop loan")
 
 
+def test_scheme_falls_back_to_general():
+    # an unknown category with no loan words falls back to the general scheme
+    assert "PM-KISAN" in match_scheme("nonexistent-category", "just a question")
+
+
+# ---- stub backend ----------------------------------------------------------
+
+
+def test_stub_backend_fills_crop_phrase():
+    out = StubBackend().advise("worms", category="pest", crop="cotton")
+    assert "cotton" in out
+
+
+def test_stub_backend_without_crop_has_no_crop_phrase():
+    out = StubBackend().advise("worms", category="pest", crop=None)
+    # the {crop} placeholder is filled with an empty string, never the literal
+    assert "{crop}" not in out
+    assert "on your" not in out
+
+
+def test_stub_backend_unknown_category_uses_general_template():
+    out = StubBackend().advise("hello", category="nonexistent-category")
+    assert "Krishi Vigyan Kendra" in out
+
+
 # ---- end-to-end advice -----------------------------------------------------
 
 
@@ -88,6 +116,13 @@ def test_advise_populates_all_fields():
 
 def test_default_backend_is_stub():
     assert Advisor().advise("how much water for paddy").backend == "stub"
+
+
+def test_advise_language_defaults_and_override():
+    # the configured default language is reported on the result
+    assert Advisor().advise("how much water for paddy").language == "en"
+    # a per-call language overrides the advisor default
+    assert Advisor(language="en").advise("paddy", language="hi").language == "hi"
 
 
 def test_advice_is_deterministic():

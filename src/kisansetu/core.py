@@ -116,7 +116,9 @@ class Advisor:
         crop = extract_crop(query)
         urgency = assess_urgency(query, category)
         scheme = match_scheme(category, query)
-        summary = self.backend.advise(query, category=category, crop=crop, language=lang)
+        summary = self.backend.advise(
+            query, category=category, crop=crop, language=lang
+        )
 
         result = AdviceResult(
             category=category,
@@ -135,7 +137,9 @@ class Advisor:
         """Append one privacy-safe JSONL line. Never logs the farmer's text."""
         if not self.audit_path:
             return
-        os.makedirs(os.path.dirname(os.path.abspath(self.audit_path)) or ".", exist_ok=True)
+        os.makedirs(
+            os.path.dirname(os.path.abspath(self.audit_path)) or ".", exist_ok=True
+        )
         event = {
             "ts": round(time.time(), 3),
             "backend": result.backend,
